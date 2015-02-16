@@ -66,7 +66,7 @@
         console.log('init');
 
         //-- Seeks <img> & <iframe> tags on page
-        $('img, iframe').each(function() {
+        $('img, iframe, object').each(function() {
             concealGenericElement($(this));
         });
 
