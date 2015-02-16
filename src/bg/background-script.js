@@ -10,6 +10,7 @@
         var BG_IMAGE_MAX_HEIGHT = 300;
         //var verbose = true; //TODO: Setting to enable console print
         //var hoverOnDelay = 500; //TODO: Setting for delaying display of hover on on concealed elements (in ms)
+        //var displayImgOnHover = true; //TODO: Setting value
 
 
 
@@ -19,18 +20,11 @@
             // REF: http://stackoverflow.com/a/12784180/174774
             var imageUrl = targetElem.css('background-image');
             var imageObj;
-            //console.log('imageObj', imageObj);
             imageUrl = imageUrl.match(/^url\("?(.+?)"?\)$/); // Remove url() or in case of Chrome url("")
 
             if (imageUrl[1]) {
                 imageUrl = imageUrl[1];
                 imageObj = new Image();
-
-                //// just in case it is not already loaded
-                //$(imageObj).load(function () {
-                //    //alert(imageObj.width + 'x' + imageObj.height);
-                //});
-
                 imageObj.src = imageUrl;
             }
 
@@ -38,30 +32,39 @@
         }
 
         function concealGenericElement(targetElem) {
-            return targetElem.addClass('dn-img-active')
-                .data('dn-default-opacity', targetElem.css('opacity'))
-                .css({ opacity: ACTIVE_OPACITY });
+            if(!targetElem.hasClass('dn-img-concealed')) {
+                targetElem.addClass('dn-img-concealed')
+                    .data('dn-default-opacity', targetElem.css('opacity'))
+                    .css({ opacity: ACTIVE_OPACITY });
+            }
+            return targetElem;
         }
 
         function concealBackgroundImageElement(targetElem) {
-            return targetElem.data('dn-default-background-image', targetElem.css('background-image'))
-                .css('background-image', 'none');
+            if(!targetElem.hasClass('dn-bg-image-concealed')) {
+                targetElem.addClass('dn-bg-image-concealed')
+                    .data('dn-default-background-image', targetElem.css('background-image'))
+                    .css('background-image', 'none');
+            }
+            return targetElem;
         }
 
 
 
         // Event Bindings
-        $('body').on('mouseenter', '.dn-img-active', function() {
+        $('body').on('mouseenter', '.dn-img-concealed', function() {
             var defaultOpacity = ($(this).data('dn-default-opacity') != '') ? $(this).data('dn-default-opacity') : 1;
             $(this).fadeTo(FADING_SPEED, defaultOpacity);
         });
-        $('body').on('mouseleave', '.dn-img-active', function() {
+        $('body').on('mouseleave', '.dn-img-concealed', function() {
             $(this).fadeTo(FADING_SPEED, ACTIVE_OPACITY);
         });
 
 
 
         // Init
+        console.log('init');
+
         //-- Seeks <img> & <iframe> tags on page
         $('img, iframe').each(function() {
             concealGenericElement($(this));
@@ -84,7 +87,6 @@
                 }
             }
         });
-
 
     });
 })(jQuery);
