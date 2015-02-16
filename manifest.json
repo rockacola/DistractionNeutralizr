@@ -1,6 +1,6 @@
 {
   "name": "Distraction Neutralizr",
-  "description": "Remove imagery distractions from a web page",
+  "description": "Google Chrome extension to actively remove 'distraction contents' from the web page.",
   "icons": {
     "16": "icons/icon16.png",
     "48": "icons/icon48.png",
