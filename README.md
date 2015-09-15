@@ -1,2 +1,3 @@
-# DistractionNeutralizr
-Distraction Neutralizr - Google Chrome extension to actively remove 'distraction contents' from the web page.
+
+# Distraction Neutralizr
+TBA on the description.

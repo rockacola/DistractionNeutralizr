@@ -4,10 +4,8 @@ chrome.browserAction.onClicked.addListener(function(tab) {
     console.log('Touching [' + tab.url + '] !');
   
     chrome.tabs.insertCSS(tab.id, {
-        file: "src/bg/background-style.css"
+        file: "css/main.css"
     });
         
-    chrome.tabs.executeScript(null, { file: "js/jquery/jquery.min.js" }, function() {
-        chrome.tabs.executeScript(null, { file: "src/bg/background-script.js" });
-    });
+    chrome.tabs.executeScript(null, { file: "js/app.js" });
 });
