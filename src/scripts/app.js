@@ -10,6 +10,8 @@ var log = require('bows')('App');
 var Utils = require('./base/utils');
 
 
+//TODO: need list of example pages to best test image/ads heavy pages
+
 
 // App Initialization
 // --------------------------------------------------
@@ -40,13 +42,44 @@ var TheInstance = window.App = window.App || {
             _this._muteImgElement($img);
         });
 
-        var adElementCollection = window.document.querySelectorAll('.ad:not(.dn-flag), .adContainer:not(.dn-flag)');
+
+
+        var adTargetSelectors = [
+            '.ad:not(.dn-flag)',
+            '.adContainer:not(.dn-flag)',
+            '[id^="google_ads_"]:not(.dn-flag)',
+            '#leaderboard_ad_container:not(.dn-flag)',
+        ];
+        var adTargetSelectorQueryString = adTargetSelectors.join(', ');
+        log('adTargetSelectorQueryString', adTargetSelectorQueryString);
+        var adElementCollection = window.document.querySelectorAll(adTargetSelectorQueryString);
         Utils.forEach(adElementCollection, function($ad) {
             _this._muteAdElement($ad);
         });
-        //TODO: support Google Adword elements
-        //TODO: support background image
+
+
+
         //TODO: support flash
+        var flashElementCollection = window.document.querySelectorAll('object[type="application/x-shockwave-flash"]:not(.dn-flag)');
+        Utils.forEach(flashElementCollection, function($flash) {
+            _this._muteFlashElement($flash);
+        });
+
+
+
+        //TODO: support background image
+
+
+
+        //TODO: is it possible to manipulate elements within iframe?
+        /*        //TODO: handle images within non-flagged iframes
+         var iframeCollection = window.document.querySelectorAll('iframe:not(.dn-flag)');
+         Utils.forEach(iframeCollection, function($iframe) {
+         var iframeImgCollection = $iframe.querySelectorAll('img:not([src=""])');
+         Utils.forEach(iframeImgCollection, function($img) {
+         _this._muteImgElement($img);
+         });
+         });*/
     },
 
     _muteImgElement: function($img) {
@@ -90,7 +123,30 @@ var TheInstance = window.App = window.App || {
         while($ad.lastChild) {
             $ad.removeChild($ad.lastChild);
         }
-    }
+    },
+
+    _muteFlashElement: function($flash) {
+        log('_muteFlashElement triggered.');
+
+        if(!$flash) { //TODO: Better validation check
+            return;
+        }
+
+        // Add flags and backup original content
+        $flash.classList.add('dn-flag');
+        $flash.setAttribute('data-dn-enabled', true);
+        $flash.setAttribute('data-dn-object-data', $flash.getAttribute('data'));
+        // Override existing element attributes
+        //TODO: May consider using 'setProperty' attribute to set '!important' (REF: http://stackoverflow.com/a/463134/174774)
+        $flash.style.width = $flash.offsetWidth + 'px';
+        $flash.style.height = $flash.offsetHeight + 'px';
+        $flash.style.backgroundColor = 'rgba(170, 170, 170, 0.6)';
+        $flash.setAttribute('data', '');
+
+        while($flash.lastChild) {
+            $flash.removeChild($flash.lastChild);
+        }
+    },
 };
 
 window.App = TheInstance; // use 'window.app' for easier debugging through browser console.
