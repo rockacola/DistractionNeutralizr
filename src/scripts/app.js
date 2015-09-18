@@ -11,7 +11,20 @@ var Utils = require('./base/utils');
 
 
 //TODO: need list of example pages to best test image/ads heavy pages
-
+/*
+ * Examples:
+ * http://www.engadget.com/
+ * - Image heavy, endless pagination
+ *
+ * http://nikonrumors.com/2015/09/17/nikon-24mm-f1-8g-ed-and-200-500mm-f5-6e-ed-vr-lenses-now-shipping.aspx/
+ * - Image, Google Ads, Disqus module, twitter module
+ *
+ * http://www.apple.com/au/
+ * - Background Image heavy
+ *
+ * https://www.youtube.com/watch?v=0af00UcTO-c
+ * - Video, image
+ */
 
 // App Initialization
 // --------------------------------------------------
@@ -47,12 +60,17 @@ var TheInstance = window.App = window.App || {
         var adTargetSelectors = [
             '.ad:not(.dn-flag)',
             '.adContainer:not(.dn-flag)',
-            '[id^="google_ads_"]:not(.dn-flag)',
+            '.GoogleActiveViewClass:not(.dn-flag)',
+            '.adsbygoogle:not(.dn-flag)',
             '#leaderboard_ad_container:not(.dn-flag)',
+            '[id^="google_ads"]', // Having trouble couple this with :not(.dn-flag)
+            '[id^="ad_creative"]',
         ];
+        //log('huh');
         var adTargetSelectorQueryString = adTargetSelectors.join(', ');
-        log('adTargetSelectorQueryString', adTargetSelectorQueryString);
+        //log('adTargetSelectorQueryString', adTargetSelectorQueryString);
         var adElementCollection = window.document.querySelectorAll(adTargetSelectorQueryString);
+        //log('adElementCollection.length', adElementCollection.length);
         Utils.forEach(adElementCollection, function($ad) {
             _this._muteAdElement($ad);
         });
@@ -146,6 +164,8 @@ var TheInstance = window.App = window.App || {
         while($flash.lastChild) {
             $flash.removeChild($flash.lastChild);
         }
+
+
     },
 };
 
