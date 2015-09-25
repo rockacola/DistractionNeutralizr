@@ -73,15 +73,19 @@ var TheInstance = window.App = window.App || {
         var adTargetSelectors = [
             '.ad:not(.dn-flag)',
             '.adContainer:not(.dn-flag)',
-            '.GoogleActiveViewClass:not(.dn-flag)',
+            //'.GoogleActiveViewClass:not(.dn-flag)',
             '.adsbygoogle:not(.dn-flag)',
-            '#leaderboard_ad_container:not(.dn-flag)',
-            '[id^="google_ads"]', // Having trouble couple this with :not(.dn-flag)
-            '[id^="ad_creative"]',
+            //'#leaderboard_ad_container:not(.dn-flag)',
+            'iframe[id^="google_ads"]', // Having trouble couple this with :not(.dn-flag)
+            //'[id^="ad_creative"]',
+            'iframe[id^="dmad"]',
+            'iframe[id^="creativeIframe"]',
+            'iframe[id^="aswift"]',
+            '[id^="dclk-studio-creative"]',
         ];
         //log('huh');
         var adTargetSelectorQueryString = adTargetSelectors.join(', ');
-        //log('adTargetSelectorQueryString', adTargetSelectorQueryString);
+        log('adTargetSelectorQueryString', adTargetSelectorQueryString);
         var adElementCollection = window.document.querySelectorAll(adTargetSelectorQueryString);
         //log('adElementCollection.length', adElementCollection.length);
         Utils.forEach(adElementCollection, function($ad) {
@@ -137,8 +141,12 @@ var TheInstance = window.App = window.App || {
         $ad.style.height = $ad.offsetHeight + 'px';
         $ad.style.backgroundColor = 'rgba(170, 170, 170, 0.6)';
 
-        while($ad.lastChild) {
-            $ad.removeChild($ad.lastChild);
+        if($ad.nodeName === 'IFRAME') {
+            $ad.src = 'about:blank';
+        } else {
+            while($ad.lastChild) {
+                $ad.removeChild($ad.lastChild);
+            }
         }
     },
 
@@ -163,8 +171,6 @@ var TheInstance = window.App = window.App || {
         while($flash.lastChild) {
             $flash.removeChild($flash.lastChild);
         }
-
-
     },
 };
 
