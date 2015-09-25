@@ -24,6 +24,9 @@ var Utils = require('./base/utils');
  *
  * https://www.youtube.com/watch?v=0af00UcTO-c
  * - Video, image
+ *
+ * http://www.codeproject.com/Articles/339725/Domain-Driven-Design-Clear-Your-Concepts-Before-Yo
+ * - Image, GoogleActiveView
  */
 
 // App Initialization
@@ -41,22 +44,32 @@ var TheInstance = window.App = window.App || {
         //TODO: What happen when this is triggered multiple times?
         log('Initialise Distraction Neutralizr. isDebug:', this.isDebug);
 
-        this._performIntervalCheck(); // perform the 1st evaluation
-        setInterval(this._performIntervalCheck.bind(this), this.checkIntervalMs); // perform checks every interval
+        if(!window.document.body.classList.contains('dn-active')) {
+            window.document.body.classList.add('dn-active');
+            this._performIntervalCheck(); // perform the 1st evaluation
+            setInterval(this._performIntervalCheck.bind(this), this.checkIntervalMs); // perform checks every interval
+        }
     },
 
     _performIntervalCheck: function() {
-        //log('_performIntervalCheck triggered.');
+        this._checkImgElements();
+        this._checkAdElements();
+        this._checkFlashElements();
+        //TODO: support background image
+        //TODO: manipulate elements within iframe?
+    },
 
+    _checkImgElements: function() {
         var _this = this;
         //var imgElementCollection = window.document.querySelectorAll('img:not(.dn-flag)');
         var imgElementCollection = window.document.querySelectorAll('img:not([src=""])');
         Utils.forEach(imgElementCollection, function($img) {
             _this._muteImgElement($img);
         });
+    },
 
-
-
+    _checkAdElements: function() {
+        var _this = this;
         var adTargetSelectors = [
             '.ad:not(.dn-flag)',
             '.adContainer:not(.dn-flag)',
@@ -72,32 +85,18 @@ var TheInstance = window.App = window.App || {
         var adElementCollection = window.document.querySelectorAll(adTargetSelectorQueryString);
         //log('adElementCollection.length', adElementCollection.length);
         Utils.forEach(adElementCollection, function($ad) {
-            _this._muteAdElement($ad);
+            if(!$ad.classList.contains('dn-flag')) {
+                _this._muteAdElement($ad);
+            }
         });
+    },
 
-
-
-        //TODO: support flash
+    _checkFlashElements: function() {
+        var _this = this;
         var flashElementCollection = window.document.querySelectorAll('object[type="application/x-shockwave-flash"]:not(.dn-flag)');
         Utils.forEach(flashElementCollection, function($flash) {
             _this._muteFlashElement($flash);
         });
-
-
-
-        //TODO: support background image
-
-
-
-        //TODO: is it possible to manipulate elements within iframe?
-        /*        //TODO: handle images within non-flagged iframes
-         var iframeCollection = window.document.querySelectorAll('iframe:not(.dn-flag)');
-         Utils.forEach(iframeCollection, function($iframe) {
-         var iframeImgCollection = $iframe.querySelectorAll('img:not([src=""])');
-         Utils.forEach(iframeImgCollection, function($img) {
-         _this._muteImgElement($img);
-         });
-         });*/
     },
 
     _muteImgElement: function($img) {
