@@ -16,6 +16,9 @@ var Utils = require('./base/utils');
  * http://www.engadget.com/
  * - Image heavy, endless pagination
  *
+ * https://en.wikipedia.org/wiki/Internet_Explorer
+ * - Image with specialised src attributes
+ *
  * http://nikonrumors.com/2015/09/17/nikon-24mm-f1-8g-ed-and-200-500mm-f5-6e-ed-vr-lenses-now-shipping.aspx/
  * - Image, Google Ads, Disqus module, twitter module
  *
@@ -41,14 +44,10 @@ var TheInstance = window.App = window.App || {
 
     // Configurations
     checkIntervalMs: 2000, //TODO: Instead of using timing, perhaps using/incorporate scrolling distance?
-    //TODO: have a feature toggle class
-    //TODO: feature to allow toggle display of content with click
 
     init: function() {
-        //TODO: What happen when this is triggered multiple times?
         log('Initialise Distraction Neutralizr. isDebug:', this.isDebug);
-
-        if(!window.document.body.classList.contains('dn-active')) {
+        if(!window.document.body.classList.contains('dn-active')) { // Mechanism to avoid the script been triggered multiple time.
             window.document.body.classList.add('dn-active');
             this._performIntervalCheck(); // perform the 1st evaluation
             setInterval(this._performIntervalCheck.bind(this), this.checkIntervalMs); // perform checks every interval
@@ -66,8 +65,8 @@ var TheInstance = window.App = window.App || {
 
     _checkImgElements: function() {
         var _this = this;
-        //var imgElementCollection = window.document.querySelectorAll('img:not(.dn-flag)');
-        var imgElementCollection = window.document.querySelectorAll('img:not([src=""])');
+        var imgElementCollection = window.document.querySelectorAll('img:not(.dn-flag)');
+        //var imgElementCollection = window.document.querySelectorAll('img:not([src=""])');
         Utils.forEach(imgElementCollection, function($img) {
             _this._muteImgElement($img);
         });
@@ -91,7 +90,7 @@ var TheInstance = window.App = window.App || {
         ];
         //log('huh');
         var adTargetSelectorQueryString = adTargetSelectors.join(', ');
-        log('adTargetSelectorQueryString', adTargetSelectorQueryString);
+        //log('adTargetSelectorQueryString', adTargetSelectorQueryString);
         var adElementCollection = window.document.querySelectorAll(adTargetSelectorQueryString);
         //log('adElementCollection.length', adElementCollection.length);
         Utils.forEach(adElementCollection, function($ad) {
@@ -118,18 +117,18 @@ var TheInstance = window.App = window.App || {
 
         // Add flags and backup original content
         $img.classList.add('dn-flag');
-        $img.setAttribute('data-dn-enabled', true);
-        $img.setAttribute('data-dn-img-src', $img.src);
-        $img.setAttribute('data-dn-img-alt', $img.alt);
-        // Override existing element attributes
-        //TODO: May consider using 'setProperty' attribute to set '!important' (REF: http://stackoverflow.com/a/463134/174774)
-        $img.style.width = $img.offsetWidth + 'px';
-        $img.style.height = $img.offsetHeight + 'px';
-        $img.style.backgroundColor = 'rgba(170, 170, 170, 0.6)';
-        $img.setAttribute('src', '');
-        $img.setAttribute('srcset', '');
-        $img.setAttribute('data-src', '');
-        $img.setAttribute('alt', '');
+        $img.classList.add('dn-image');
+
+        // Little stretch to apply a wrapper DIV around the image element
+        var $imgWrapper = document.createElement('div');
+        $imgWrapper.classList.add('dn-image-wrapper');
+        $imgWrapper.appendChild($img.cloneNode(true));
+        var $imgParent = $img.parentNode;
+        $imgParent.removeChild($img);
+        $imgParent.appendChild($imgWrapper);
+
+        // Bind Event Listener
+        $imgWrapper.addEventListener('click', this._imgWrapperClickHandler.bind($imgWrapper)); // Just in case, binding the image wrapper
     },
 
     _muteAdElement: function($ad) {
@@ -177,6 +176,13 @@ var TheInstance = window.App = window.App || {
         while($flash.lastChild) {
             $flash.removeChild($flash.lastChild);
         }
+    },
+
+    // Event Bindings
+
+    _imgWrapperClickHandler: function(e) {
+        e.preventDefault(); // NOTE: This will also disable original's anchor behaviour.
+        this.classList.toggle('dn-disable');
     },
 };
 
