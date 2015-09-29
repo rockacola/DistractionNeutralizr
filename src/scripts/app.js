@@ -56,8 +56,9 @@ var TheInstance = window.App = window.App || {
 
     _performIntervalCheck: function() {
         this._checkImgElements();
-        this._checkAdElements();
-        this._checkFlashElements();
+        this._checkIframeElements();
+        //this._checkAdElements();
+        //this._checkFlashElements();
         //TODO: support background image
         //TODO: manipulate elements within iframe?
         //TODO: ability to block all iframe contents?
@@ -69,6 +70,14 @@ var TheInstance = window.App = window.App || {
         //var imgElementCollection = window.document.querySelectorAll('img:not([src=""])');
         Utils.forEach(imgElementCollection, function($img) {
             _this._muteImgElement($img);
+        });
+    },
+
+    _checkIframeElements: function() {
+        var _this = this;
+        var iframeElementCollection = window.document.querySelectorAll('iframe:not(.dn-flag)');
+        Utils.forEach(iframeElementCollection, function($iframe) {
+            _this._muteIframeElement($iframe);
         });
     },
 
@@ -115,11 +124,11 @@ var TheInstance = window.App = window.App || {
             return;
         }
 
-        // Add flags and backup original content
+        // Add flags
         $img.classList.add('dn-flag');
         $img.classList.add('dn-image');
 
-        // Little stretch to apply a wrapper DIV around the image element
+        // Little stretch to apply a wrapper DIV around the element
         var $imgWrapper = document.createElement('div');
         $imgWrapper.classList.add('dn-image-wrapper');
         $imgWrapper.appendChild($img.cloneNode(true));
@@ -129,6 +138,28 @@ var TheInstance = window.App = window.App || {
 
         // Bind Event Listener
         $imgWrapper.addEventListener('click', this._imgWrapperClickHandler.bind($imgWrapper)); // Just in case, binding the image wrapper
+    },
+
+    _muteIframeElement: function($iframe) {
+        //TODO: this (along with its css) is so far the same as img treatment. May consolidate.
+
+        log('_muteIframeElement triggered.');
+
+        if(!$iframe) { //TODO: Better validation check
+            return;
+        }
+
+        // Add flags
+        $iframe.classList.add('dn-flag');
+        $iframe.classList.add('dn-iframe');
+
+        // Little stretch to apply a wrapper DIV around the element
+        var $iframeWrapper = document.createElement('div');
+        $iframeWrapper.classList.add('dn-iframe-wrapper');
+        $iframeWrapper.appendChild($iframe.cloneNode(true));
+        var $iframeParent = $iframe.parentNode;
+        $iframeParent.removeChild($iframe);
+        $iframeParent.appendChild($iframeWrapper);
     },
 
     _muteAdElement: function($ad) {
