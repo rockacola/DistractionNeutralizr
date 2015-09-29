@@ -23,10 +23,14 @@ var Utils = require('./base/utils');
  * - Background Image heavy
  *
  * https://www.youtube.com/watch?v=0af00UcTO-c
+ * https://www.youtube.com/results?search_query=ted+talks
  * - Video, image
  *
  * http://www.codeproject.com/Articles/339725/Domain-Driven-Design-Clear-Your-Concepts-Before-Yo
  * - Image, GoogleActiveView
+ *
+ * http://www.macrumors.com/2015/09/28/mame-emulator-new-apple-tv/
+ * - Image, Video, Google Ads
  */
 
 // App Initialization
@@ -36,7 +40,7 @@ var TheInstance = window.App = window.App || {
     isDebug: true,
 
     // Configurations
-    checkIntervalMs: 2000,
+    checkIntervalMs: 2000, //TODO: Instead of using timing, perhaps using/incorporate scrolling distance?
     //TODO: have a feature toggle class
     //TODO: feature to allow toggle display of content with click
 
@@ -57,6 +61,7 @@ var TheInstance = window.App = window.App || {
         this._checkFlashElements();
         //TODO: support background image
         //TODO: manipulate elements within iframe?
+        //TODO: ability to block all iframe contents?
     },
 
     _checkImgElements: function() {
@@ -73,15 +78,16 @@ var TheInstance = window.App = window.App || {
         var adTargetSelectors = [
             '.ad:not(.dn-flag)',
             '.adContainer:not(.dn-flag)',
-            //'.GoogleActiveViewClass:not(.dn-flag)',
+            '.GoogleActiveViewClass iframe:not(.dn-flag)',
             '.adsbygoogle:not(.dn-flag)',
             //'#leaderboard_ad_container:not(.dn-flag)',
             'iframe[id^="google_ads"]', // Having trouble couple this with :not(.dn-flag)
-            //'[id^="ad_creative"]',
+            'iframe[id^="ad_creative"]',
             'iframe[id^="dmad"]',
             'iframe[id^="creativeIframe"]',
             'iframe[id^="aswift"]',
             '[id^="dclk-studio-creative"]',
+            '[id^="google_companion_ad"] iframe:not(.dn-flag)',
         ];
         //log('huh');
         var adTargetSelectorQueryString = adTargetSelectors.join(', ');
