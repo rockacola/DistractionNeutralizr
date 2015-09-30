@@ -34,6 +34,11 @@ var Utils = require('./base/utils');
  *
  * http://www.macrumors.com/2015/09/28/mame-emulator-new-apple-tv/
  * - Image, Video, Google Ads
+ *
+ *
+ * Roadmap:
+ * - Overlay icon on disabled elements and show corresponding annotation icons to effects.
+ *
  */
 
 // App Initialization
@@ -49,6 +54,8 @@ var TheInstance = window.App = window.App || {
         log('Initialise Distraction Neutralizr. isDebug:', this.isDebug);
         if(!window.document.body.classList.contains('dn-active')) { // Mechanism to avoid the script been triggered multiple time.
             window.document.body.classList.add('dn-active');
+
+
             this._performIntervalCheck(); // perform the 1st evaluation
             setInterval(this._performIntervalCheck.bind(this), this.checkIntervalMs); // perform checks every interval
         }
@@ -117,27 +124,37 @@ var TheInstance = window.App = window.App || {
         });
     },
 
-    _muteImgElement: function($img) {
+    _muteImgElement: function($el) {
+        //TODO: perhaps I should try catch this?
         log('_muteImgElement triggered.');
 
-        if(!$img) { //TODO: Better validation check
+        if(!$el) { //TODO: Better validation check
             return;
         }
 
         // Add flags
-        $img.classList.add('dn-flag');
-        $img.classList.add('dn-image');
+        $el.classList.add('dn-flag', 'dn-object', 'dn-image');
 
-        // Little stretch to apply a wrapper DIV around the element
-        var $imgWrapper = document.createElement('div');
-        $imgWrapper.classList.add('dn-image-wrapper');
-        $imgWrapper.appendChild($img.cloneNode(true));
-        var $imgParent = $img.parentNode;
-        $imgParent.removeChild($img);
-        $imgParent.appendChild($imgWrapper);
+        // Apply object wrapper
+        var $wrapper = document.createElement('div');
+        $wrapper.classList.add('dn-object-wrapper', 'dn-image-wrapper');
+        var $elClone = $el.cloneNode(true);
+        $wrapper.appendChild($elClone);
+        var $elParent = $el.parentNode;
+        $elParent.removeChild($el);
+        $elParent.appendChild($wrapper);
+
+        // Pass attributes from object to its wrapper
+        var $elComputedStyle = window.getComputedStyle($elClone);
+        $wrapper.style.width = $elComputedStyle.width;
+        $wrapper.style.height = $elComputedStyle.height;
+        $wrapper.style.margin = $elComputedStyle.margin;
+        $wrapper.style.padding = $elComputedStyle.padding;
+        $elClone.style.margin = '0';
+        $elClone.style.padding = '0';
 
         // Bind Event Listener
-        $imgWrapper.addEventListener('click', this._imgWrapperClickHandler.bind($imgWrapper)); // Just in case, binding the image wrapper
+        $wrapper.addEventListener('click', this._imgWrapperClickHandler.bind($wrapper)); // Just in case, binding the image wrapper
     },
 
     _muteIframeElement: function($iframe) {
