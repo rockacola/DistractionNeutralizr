@@ -41,7 +41,6 @@ var Utils = require('./base/utils');
  *
  * Roadmap:
  * - Flash support
- * - Video support
  * - Overlay icon on disabled elements and show corresponding annotation icons to effects.
  * - Detects and hides intrusive background images
  *
@@ -54,7 +53,7 @@ var TheInstance = window.App = window.App || {
     isDebug: true, // Currently not been utilised
 
     // Configurations
-    checkIntervalMs: 4000, //TODO: Instead of using timing, perhaps using/incorporate scrolling distance?
+    checkIntervalMs: 2500, //TODO: Instead of using timing, perhaps using/incorporate scrolling distance?
 
     init: function() {
         log('Initialise Distraction Neutralizr. isDebug:', this.isDebug);
@@ -78,6 +77,12 @@ var TheInstance = window.App = window.App || {
         var iframeElementCollection = window.document.querySelectorAll('iframe:not(.dn-flag)');
         Utils.forEach(iframeElementCollection, function($iframe) {
             _this._muteBasicElement($iframe);
+        });
+
+        // Video
+        var videoElementCollection = window.document.querySelectorAll('video:not(.dn-flag)');
+        Utils.forEach(videoElementCollection, function($video) {
+            _this._muteBasicElement($video);
         });
     },
 
