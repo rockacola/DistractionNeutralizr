@@ -35,6 +35,9 @@ var Utils = require('./base/utils');
  * http://www.macrumors.com/2015/09/28/mame-emulator-new-apple-tv/
  * - Image, Video, Google Ads
  *
+ * http://blog.codinghorror.com/our-brave-new-world-of-4k-displays/
+ * - Image, video element
+ *
  *
  * Roadmap:
  * - Flash support
@@ -63,40 +66,36 @@ var TheInstance = window.App = window.App || {
     },
 
     _performIntervalCheck: function() {
-        this._checkImgElements();
-        this._checkIframeElements();
-    },
-
-    _checkImgElements: function() {
         var _this = this;
+
+        // Images
         var imgElementCollection = window.document.querySelectorAll('img:not(.dn-flag)');
         Utils.forEach(imgElementCollection, function($img) {
-            _this._muteBasicElement($img, 'image');
+            _this._muteBasicElement($img);
         });
-    },
 
-    _checkIframeElements: function() {
-        var _this = this;
+        // iFrames
         var iframeElementCollection = window.document.querySelectorAll('iframe:not(.dn-flag)');
         Utils.forEach(iframeElementCollection, function($iframe) {
-            _this._muteBasicElement($iframe, 'iframe');
+            _this._muteBasicElement($iframe);
         });
     },
 
-    _muteBasicElement: function($el, objectType) {
+    _muteBasicElement: function($el) {
         //TODO: perhaps I should try catch this?
-        log('_muteBasicElement triggered.');
-
         if(!$el) { //TODO: Better validation check
             return;
         }
 
+        var elementType = $el.nodeName.toLowerCase();
+        log('_muteBasicElement triggered. Type:', elementType);
+
         // Add flags
-        $el.classList.add('dn-flag', 'dn-object', 'dn-'+objectType);
+        $el.classList.add('dn-flag', 'dn-object', 'dn-'+elementType);
 
         // Apply object wrapper
         var $wrapper = document.createElement('div');
-        $wrapper.classList.add('dn-object-wrapper', 'dn-'+objectType+'-wrapper');
+        $wrapper.classList.add('dn-object-wrapper', 'dn-'+elementType+'-wrapper');
         var $elClone = $el.cloneNode(true);
         $wrapper.appendChild($elClone);
         var $elParent = $el.parentNode;
