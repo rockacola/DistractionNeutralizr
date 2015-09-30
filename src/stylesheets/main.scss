@@ -18,7 +18,7 @@ $color-grey-mid: #707070;
 	}
 
 	.dn-object {
-		opacity: 0.05;
+		opacity: 0.05 !important;
 		transition: all 0.3s ease;
 	}
 
@@ -27,7 +27,7 @@ $color-grey-mid: #707070;
 			background-color: rgba($color-grey-mid, 0.2);
 		}
 		.dn-object {
-			opacity: 0.2;
+			opacity: 0.2 !important;
 		}
 	}
 
@@ -37,7 +37,7 @@ $color-grey-mid: #707070;
 		}
 
 		.dn-object {
-			opacity: 1;
+			opacity: 1 !important;
 		}
 	}
 }
