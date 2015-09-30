@@ -40,7 +40,7 @@ var Utils = require('./base/utils');
 // --------------------------------------------------
 
 var TheInstance = window.App = window.App || {
-    isDebug: true,
+    isDebug: true, // Currently not been utilised
 
     // Configurations
     checkIntervalMs: 2000, //TODO: Instead of using timing, perhaps using/incorporate scrolling distance?
@@ -56,7 +56,7 @@ var TheInstance = window.App = window.App || {
 
     _performIntervalCheck: function() {
         this._checkImgElements();
-        this._checkIframeElements();
+        //this._checkIframeElements();
         //this._checkAdElements();
         //this._checkFlashElements();
         //TODO: support background image
@@ -212,8 +212,11 @@ var TheInstance = window.App = window.App || {
     // Event Bindings
 
     _imgWrapperClickHandler: function(e) {
-        e.preventDefault(); // NOTE: This will also disable original's anchor behaviour.
-        this.classList.toggle('dn-disable');
+        if(!this.classList.contains('dn-disabled')) {
+            log('_imgWrapperClickHandler triggered');
+            e.preventDefault(); // NOTE: This will also disable original's anchor behaviour.
+            this.classList.add('dn-disabled');
+        }
     },
 };
 

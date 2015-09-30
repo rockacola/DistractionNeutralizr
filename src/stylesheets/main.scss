@@ -31,7 +31,7 @@ $color-grey-mid: #707070;
 		}
 	}
 
-	&.dn-disable {
+	&.dn-disabled {
 		&::before {
 			content: none;
 		}
