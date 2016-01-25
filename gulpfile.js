@@ -65,7 +65,7 @@ gulp.task('styles', function() {
             browser: ['Firefox >= 32', 'Chrome >= 38', 'Explorer >= 10', 'iOS >= 7'],
             cascade: false
         }))
-        .pipe(plugins.if(env.isProduction, plugins.minifyCss()))
+        .pipe(plugins.if(env.isProduction, plugins.cssnano()))
         .pipe(plugins.if(!env.isProduction, plugins.sourcemaps.write()))
         .pipe(gulp.dest('./dist/css/'))
         .pipe(plugins.browserSync.reload({
@@ -135,6 +135,9 @@ gulp.task('watch', function() {
 gulp.task('build-production', function() {
     env.isProduction = true;
     return gulp.start('build');
+});
+gulp.task('bp', function() { // Shortcut
+    return gulp.start('build-production');
 });
 
 
