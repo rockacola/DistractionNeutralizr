@@ -1,23 +1,13 @@
 {
-  "name": "WebApp",
+  "name": "App",
   "version": "0.0.0",
   "private": true,
   "dependencies": {
-    "ampersand-app": "^1.0.4",
-    "ampersand-collection": "^1.4.5",
-    "ampersand-events": "^1.1.1",
-    "ampersand-model": "^5.0.3",
-    "ampersand-router": "^3.0.2",
-    "ampersand-state": "^4.5.6",
-    "ampersand-view": "^8.0.1",
-    "ampersand-view-switcher": "^2.0.0",
     "bows": "^1.4.8",
-    "lodash": "^3.10.1",
-    "raf": "^3.1.0",
-    "universal-analytics": "^0.3.9"
+    "lodash": "^4.0.0"
   },
   "devDependencies": {
-    "browser-sync": "2.8.2",
+    "browser-sync": "2.11.1",
     "del": "^1.2.1",
     "gulp": "^3.9.0",
     "gulp-autoprefixer": "^2.3.1",

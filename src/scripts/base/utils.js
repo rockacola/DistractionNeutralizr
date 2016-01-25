@@ -14,9 +14,9 @@ var Utils = {
 
     // Lodash Utils ----------------
 
-    forEach: require('lodash/collection/forEach'),
-    //assign: require('lodash/object/assign'),
-    //debounce: require('lodash/function/debounce'),
+    forEach: require('lodash/forEach'),
+    //assign: require('lodash/assign'),
+    //debounce: require('lodash/debounce'),
 
     // NPM Libraries ----------------
 
