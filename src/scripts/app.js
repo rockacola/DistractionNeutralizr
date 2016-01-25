@@ -18,16 +18,18 @@ var Settings = require('./base/settings');
 var TheInstance = window.App = window.App || {
 
     init: function() {
-        log('Initialise Distraction Neutralizr. IsProduction:', Settings.IsProduction);
         if(!window.document.body.classList.contains('dn-active')) { // Mechanism to avoid the script been triggered multiple time.
+            log('[TRACE]', 'Initialise Distraction Neutralizr. IsProduction:', Settings.IsProduction);
             window.document.body.classList.add('dn-active');
             this._performIntervalCheck(); // perform the 1st evaluation
             setInterval(this._performIntervalCheck.bind(this), Settings.CheckInternal);
+        } else {
+            log('[INFO]', 'It appears you are trying to trigger the app multiple times. Nothing will happen as an instance is already running');
         }
     },
 
     _performIntervalCheck: function() {
-        log('_performIntervalCheck triggered');
+        log('[TRACE]', '_performIntervalCheck triggered');
         var _this = this;
 
         // Images
@@ -56,7 +58,7 @@ var TheInstance = window.App = window.App || {
         }
 
         var elementType = $el.nodeName.toLowerCase();
-        log('_muteBasicElement triggered. Type:', elementType);
+        log('[TRACE]', '_muteBasicElement triggered. Type:', elementType);
 
         // Add flags
         $el.classList.add('dn-flag', 'dn-object', 'dn-'+elementType);
@@ -87,7 +89,7 @@ var TheInstance = window.App = window.App || {
 
     _basicWrapperClickHandler: function(e) {
         if(!this.classList.contains('dn-disabled')) {
-            log('_basicWrapperClickHandler triggered');
+            log('[TRACE]', '_basicWrapperClickHandler triggered');
             e.preventDefault(); // NOTE: This will also disable original's anchor behaviour.
             this.classList.add('dn-disabled');
         }
