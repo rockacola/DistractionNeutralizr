@@ -10,41 +10,6 @@ var log = require('bows')('App');
 var Utils = require('./base/utils');
 
 
-//TODO: need list of example pages to best test image/ads heavy pages
-/*
- * Examples:
- * http://www.engadget.com/
- * - Image heavy, endless pagination
- *
- * https://en.wikipedia.org/wiki/Internet_Explorer
- * - Image with specialised src attributes
- *
- * http://nikonrumors.com/2015/09/17/nikon-24mm-f1-8g-ed-and-200-500mm-f5-6e-ed-vr-lenses-now-shipping.aspx/
- * - Image, Google Ads, Disqus module, twitter module
- *
- * http://www.apple.com/au/
- * - Background Image heavy
- *
- * https://www.youtube.com/watch?v=0af00UcTO-c
- * https://www.youtube.com/results?search_query=ted+talks
- * - Video, image
- *
- * http://www.codeproject.com/Articles/339725/Domain-Driven-Design-Clear-Your-Concepts-Before-Yo
- * - Image, GoogleActiveView
- *
- * http://www.macrumors.com/2015/09/28/mame-emulator-new-apple-tv/
- * - Image, Video, Google Ads
- *
- * http://blog.codinghorror.com/our-brave-new-world-of-4k-displays/
- * - Image, video element
- *
- *
- * Roadmap:
- * - Flash support
- * - Overlay icon on disabled elements and show corresponding annotation icons to effects.
- * - Detects and hides intrusive background images
- *
- */
 
 // App Initialization
 // --------------------------------------------------

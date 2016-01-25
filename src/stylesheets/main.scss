@@ -1,43 +1,49 @@
-/* CSS Here */
+/*
+ * Naming convention:
+ * - use dash as separator
+ * - all lower cases
+ * - use plural when appropriate
+ *
+ * Note:
+ * - Foundation works with mobile-first by convention.
+ */
 
-$color-grey-mid: #707070;
+/*
+ * Variables
+ * --------------------------------------------------
+ */
+@import "variables";
 
-.dn-object-wrapper {
-	display: inline-block;
-	position: relative;
 
-	&::before {
-		content: '';
-		position: absolute;
-		top: 0;
-		left: 0;
-		width: 100%;
-		height: 100%;
-		background-color: rgba($color-grey-mid, 0.4);
-		transition: all 0.3s ease;
-	}
 
-	.dn-object {
-		opacity: 0.05 !important;
-		transition: all 0.3s ease;
-	}
+/*
+ * Third-party
+ * --------------------------------------------------
+ */
+//@import "vendor/foundation/normalize";
+//@import "vendor/foundation/foundation/functions"; //NOTE: This is needed by '_settings.scss';
+//@import "settings"; // Foundation setting override per project base. This is needed before loading the components
+//@import "vendor/foundation/foundation/components/inline-lists";
+//@import "vendor/foundation/foundation/components/buttons";
+//@import "vendor/foundation/foundation/components/grid";
+//@import "vendor/foundation/foundation/components/top-bar";
+//@import "vendor/foundation/foundation/components/type";
+//@import "vendor/foundation/foundation/components/visibility";
+//... Add more Foundation components only as required
 
-	&:hover {
-		&::before {
-			background-color: rgba($color-grey-mid, 0.2);
-		}
-		.dn-object {
-			opacity: 0.2 !important;
-		}
-	}
 
-	&.dn-disabled {
-		&::before {
-			content: none;
-		}
 
-		.dn-object {
-			opacity: 1 !important;
-		}
-	}
-}
+/*
+ * Partials
+ * --------------------------------------------------
+ */
+//@import "partials/buttons";
+
+
+
+/*
+ * Modules
+ * --------------------------------------------------
+ */
+@import "modules/global"; //This should be the first module you load
+@import "modules/hack"; //This should be the last module you load

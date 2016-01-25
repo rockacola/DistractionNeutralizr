@@ -1,0 +1,51 @@
+//
+// Modules / Hack
+//
+
+/*
+ * This is where you place unorganised styles and
+ * are subject to rapid refactoring
+ */
+
+
+$color-grey-mid: #707070;
+
+.dn-object-wrapper {
+    display: inline-block;
+    position: relative;
+
+    &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba($color-grey-mid, 0.4);
+        transition: all 0.3s ease;
+    }
+
+    .dn-object {
+        opacity: 0.05 !important;
+        transition: all 0.3s ease;
+    }
+
+    &:hover {
+        &::before {
+            background-color: rgba($color-grey-mid, 0.2);
+        }
+        .dn-object {
+            opacity: 0.2 !important;
+        }
+    }
+
+    &.dn-disabled {
+        &::before {
+            content: none;
+        }
+
+        .dn-object {
+            opacity: 1 !important;
+        }
+    }
+}
