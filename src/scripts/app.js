@@ -8,6 +8,7 @@
 //NOTE: Browser may needs to run "localStorage.debug=true" to have bows showing up in console.
 var log = require('bows')('App');
 var Utils = require('./base/utils');
+var Settings = require('./base/settings');
 
 
 
@@ -15,21 +16,18 @@ var Utils = require('./base/utils');
 // --------------------------------------------------
 
 var TheInstance = window.App = window.App || {
-    isDebug: true, // Currently not been utilised
-
-    // Configurations
-    checkIntervalMs: 2500, //TODO: Instead of using timing, perhaps using/incorporate scrolling distance?
 
     init: function() {
-        log('Initialise Distraction Neutralizr. isDebug:', this.isDebug);
+        log('Initialise Distraction Neutralizr. IsProduction:', Settings.IsProduction);
         if(!window.document.body.classList.contains('dn-active')) { // Mechanism to avoid the script been triggered multiple time.
             window.document.body.classList.add('dn-active');
             this._performIntervalCheck(); // perform the 1st evaluation
-            setInterval(this._performIntervalCheck.bind(this), this.checkIntervalMs);
+            setInterval(this._performIntervalCheck.bind(this), Settings.CheckInternal);
         }
     },
 
     _performIntervalCheck: function() {
+        log('_performIntervalCheck triggered');
         var _this = this;
 
         // Images
