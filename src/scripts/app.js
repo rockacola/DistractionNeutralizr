@@ -18,9 +18,10 @@ var Settings = require('./base/settings');
 var TheInstance = window.App = window.App || {
 
     init: function() {
-        if(!window.document.body.classList.contains('dn-active')) { // Mechanism to avoid the script been triggered multiple time.
+        if(window.document.body.getAttribute('dn-activate') != 'true') { // Mechanism to avoid the script been triggered multiple time.
             log('[TRACE]', 'Initialise Distraction Neutralizr. IsProduction:', Settings.IsProduction);
-            window.document.body.classList.add('dn-active');
+            window.document.body.setAttribute('dn-activate', true);
+
             this._performIntervalCheck(); // perform the 1st evaluation
             setInterval(this._performIntervalCheck.bind(this), Settings.CheckInternal);
         } else {
@@ -30,14 +31,13 @@ var TheInstance = window.App = window.App || {
 
     _performIntervalCheck: function() {
         log('[TRACE]', '_performIntervalCheck triggered');
-        var _this = this;
+        //var _this = this;
 
-        // Images
-        var imgElementCollection = window.document.querySelectorAll('img:not(.dn-flag)');
-        Utils.forEach(imgElementCollection, function($img) {
-            _this._muteBasicElement($img);
-        });
+        if(Settings.BlockImage) {
+            this._performBlockImage();
+        }
 
+        /*
         // iFrames
         var iframeElementCollection = window.document.querySelectorAll('iframe:not(.dn-flag)');
         Utils.forEach(iframeElementCollection, function($iframe) {
@@ -49,49 +49,102 @@ var TheInstance = window.App = window.App || {
         Utils.forEach(videoElementCollection, function($video) {
             _this._muteBasicElement($video);
         });
+        */
     },
 
-    _muteBasicElement: function($el) {
-        //TODO: perhaps I should try catch this?
-        if(!$el) { //TODO: Better validation check
-            return;
+    _performBlockImage: function() {
+        var _this = this;
+        var $images = window.document.querySelectorAll('img:not([dn-mute="true"]');
+        Utils.forEach($images, function($img) {
+            _this._muteImage($img);
+        });
+    },
+
+    _muteImage: function($el) {
+        log('[TRACE]', '_muteImage triggered.');
+        //TODO: validation check necessary vs performance?
+        this._muteBasicElement($el, $el.nodeName.toLowerCase());
+    },
+
+    _muteBasicElement: function($el, elementType) {
+        //log('[TRACE]', '_muteBasicElement triggered. $el:', $el, 'Type:', elementType);
+        var $elComputedStyle = window.getComputedStyle($el);
+        //log('[TRACE]', '$elComputedStyle:', $elComputedStyle);
+
+        // Set element attributes
+        $el.setAttribute('dn-mute', true);
+        $el.setAttribute('dn-type', elementType);
+
+
+        // Apply object wrapping
+        var $wrapper = document.createElement('div');
+        $wrapper.setAttribute('dn-type', 'wrapper');
+        $wrapper.setAttribute('dn-wrapper-for', elementType);
+        var $relativeWrapper = document.createElement('div');
+        $relativeWrapper.style.position = 'relative';
+        $wrapper.appendChild($relativeWrapper);
+        var $elClone = $el.cloneNode(true);
+        $relativeWrapper.appendChild($elClone);
+        $el.parentNode.insertBefore($wrapper, $el.nextSibling);
+        $el.parentNode.removeChild($el);
+
+        //TODO: getComputedStyle() is not 100% accurate. May want to look into other methods: http://www.quirksmode.org/dom/w3c_css.html
+        // Migrate element style specification to its wrapper
+        var $elComputedStyle = window.getComputedStyle($elClone);
+        //log('[TRACE]', '$elComputedStyle:', $elComputedStyle);
+        if($elComputedStyle.position != 'static') {
+            $wrapper.style.position = $elComputedStyle.position;
+            $elClone.style.position = 'static';
+        }
+        if($elComputedStyle.display != 'block') {
+            $wrapper.style.display = ($elComputedStyle.display == 'inline') ? 'inline-block' : $elComputedStyle.display;
+            $elClone.style.display = 'block';
         }
 
-        var elementType = $el.nodeName.toLowerCase();
-        log('[TRACE]', '_muteBasicElement triggered. Type:', elementType);
-
-        // Add flags
-        $el.classList.add('dn-flag', 'dn-object', 'dn-'+elementType);
-
-        // Apply object wrapper
-        var $wrapper = document.createElement('div');
-        $wrapper.classList.add('dn-object-wrapper', 'dn-'+elementType+'-wrapper');
-        var $elClone = $el.cloneNode(true);
-        $wrapper.appendChild($elClone);
-        var $elParent = $el.parentNode;
-        $elParent.removeChild($el);
-        $elParent.appendChild($wrapper);
-
-        // Pass attributes from object to its wrapper
-        var $elComputedStyle = window.getComputedStyle($elClone);
         $wrapper.style.width = $elComputedStyle.width;
+        $elClone.style.width = 'auto';
         $wrapper.style.height = $elComputedStyle.height;
-        $wrapper.style.margin = $elComputedStyle.margin;
-        $wrapper.style.padding = $elComputedStyle.padding;
-        $elClone.style.margin = '0';
-        $elClone.style.padding = '0';
+        $elClone.style.height = 'auto';
+
+        if($elComputedStyle.margin != '0px') {
+            $wrapper.style.margin = $elComputedStyle.margin;
+            $elClone.style.margin = '0px';
+        }
+        if($elComputedStyle.padding != '0px') {
+            $wrapper.style.padding = $elComputedStyle.padding;
+            $elClone.style.padding = '0px';
+        }
+        if($elComputedStyle.top != 'auto') {
+            $wrapper.style.top = $elComputedStyle.top;
+            $elClone.style.top = 'auto';
+        }
+        if($elComputedStyle.bottom != 'auto') {
+            $wrapper.style.bottom = $elComputedStyle.bottom;
+            $elClone.style.bottom = 'auto';
+        }
+        if($elComputedStyle.left != 'auto') {
+            $wrapper.style.left = $elComputedStyle.left;
+            $elClone.style.left = 'auto';
+        }
+        if($elComputedStyle.right != 'auto') {
+            $wrapper.style.right = $elComputedStyle.right;
+            $elClone.style.right = 'auto';
+        }
+
 
         // Bind Event Listener
-        $wrapper.addEventListener('click', this._basicWrapperClickHandler.bind($wrapper)); // Just in case, binding the image wrapper
+        if(Settings.EnableClickToUnmute) {
+            $wrapper.addEventListener('click', this._basicWrapperClickHandler.bind($wrapper)); // Just in case, binding the image wrapper
+        }
     },
 
     // Event Bindings
-
     _basicWrapperClickHandler: function(e) {
-        if(!this.classList.contains('dn-disabled')) {
+        var $wrapper = this;
+        if($wrapper.getAttribute('dn-disabled') != 'true') {
             log('[TRACE]', '_basicWrapperClickHandler triggered');
             e.preventDefault(); // NOTE: This will also disable original's anchor behaviour.
-            this.classList.add('dn-disabled');
+            $wrapper.setAttribute('dn-disabled', true);
         }
     },
 };

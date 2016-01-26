@@ -66,7 +66,7 @@ TBA
 ## Progress
 
 ### Todo List
-* TBA
+* Detect display:block/inline-block elements that has no contents and a background-image.
 
 ### Backburner
 * TBA
