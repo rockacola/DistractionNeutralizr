@@ -31,50 +31,67 @@ var TheInstance = window.App = window.App || {
 
     _performIntervalCheck: function() {
         log('[TRACE]', '_performIntervalCheck triggered');
-        //var _this = this;
 
         if(Settings.BlockImage) {
             this._performBlockImage();
         }
 
-        /*
-        // iFrames
-        var iframeElementCollection = window.document.querySelectorAll('iframe:not(.dn-flag)');
-        Utils.forEach(iframeElementCollection, function($iframe) {
-            _this._muteBasicElement($iframe);
-        });
+        if(Settings.BlockIframe) {
+            this._performBlockIframe();
+        }
 
-        // Video
-        var videoElementCollection = window.document.querySelectorAll('video:not(.dn-flag)');
-        Utils.forEach(videoElementCollection, function($video) {
-            _this._muteBasicElement($video);
-        });
-        */
+        if(Settings.BlockVideo) {
+            this._performBlockVideo();
+        }
     },
 
     _performBlockImage: function() {
         var _this = this;
-        var $images = window.document.querySelectorAll('img:not([dn-mute="true"]');
+        var $images = window.document.querySelectorAll('img:not([dn-mute="true"])');
         Utils.forEach($images, function($img) {
             _this._muteImage($img);
         });
     },
 
+    _performBlockIframe: function() {
+        var _this = this;
+        var $iframes = window.document.querySelectorAll('iframe:not([dn-mute="true"])');
+        Utils.forEach($iframes, function($iframe) {
+            _this._muteIframe($iframe);
+        });
+    },
+
+    _performBlockVideo: function() {
+        var _this = this;
+        var $videos = window.document.querySelectorAll('video:not([dn-mute="true"])');
+        Utils.forEach($videos, function($video) {
+            _this._muteVideo($video);
+        });
+    },
+
     _muteImage: function($el) {
         log('[TRACE]', '_muteImage triggered.');
-        //TODO: validation check necessary vs performance?
+        this._muteBasicElement($el, $el.nodeName.toLowerCase());
+    },
+
+    _muteIframe: function($el) {
+        log('[TRACE]', '_muteIframe triggered.');
+        this._muteBasicElement($el, $el.nodeName.toLowerCase());
+    },
+
+    _muteVideo: function($el) {
+        log('[TRACE]', '_muteVideo triggered.');
         this._muteBasicElement($el, $el.nodeName.toLowerCase());
     },
 
     _muteBasicElement: function($el, elementType) {
         //log('[TRACE]', '_muteBasicElement triggered. $el:', $el, 'Type:', elementType);
-        var $elComputedStyle = window.getComputedStyle($el);
+        //var $elComputedStyle = window.getComputedStyle($el);
         //log('[TRACE]', '$elComputedStyle:', $elComputedStyle);
 
         // Set element attributes
         $el.setAttribute('dn-mute', true);
         $el.setAttribute('dn-type', elementType);
-
 
         // Apply object wrapping
         var $wrapper = document.createElement('div');
@@ -130,7 +147,6 @@ var TheInstance = window.App = window.App || {
             $wrapper.style.right = $elComputedStyle.right;
             $elClone.style.right = 'auto';
         }
-
 
         // Bind Event Listener
         if(Settings.EnableClickToUnmute) {

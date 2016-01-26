@@ -16,7 +16,9 @@ module.exports = {
 
     CheckInternal: 2500, // in milliseconds
     BlockImage: true,
-    BlockFlash: true,
+    BlockIframe: true,
+    BlockVideo: true,
     //BlockGoogleAd: true,
+    //BlockFlash: true,
     EnableClickToUnmute: true,
 };
