@@ -15,10 +15,11 @@ module.exports = {
     IsProduction: false,
 
     CheckInternal: 2500, // in milliseconds
-    BlockImage: true,
-    BlockIframe: true,
-    BlockVideo: true,
-    //BlockGoogleAd: true,
-    //BlockFlash: true,
+    MuteImage: true,
+    MuteIframe: true,
+    MuteVideo: true,
+    MuteBackgroundImage: true,
     EnableClickToUnmute: true,
+
+    WildcardElementCheckLimit: 100,
 };

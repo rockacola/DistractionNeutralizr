@@ -17,6 +17,8 @@ var Settings = require('./base/settings');
 
 var TheInstance = window.App = window.App || {
 
+    checkCount: 0,
+
     init: function() {
         if(window.document.body.getAttribute('dn-activate') != 'true') { // Mechanism to avoid the script been triggered multiple time.
             log('[TRACE]', 'Initialise Distraction Neutralizr. IsProduction:', Settings.IsProduction);
@@ -32,17 +34,25 @@ var TheInstance = window.App = window.App || {
     _performIntervalCheck: function() {
         log('[TRACE]', '_performIntervalCheck triggered');
 
-        if(Settings.BlockImage) {
+        if(Settings.MuteImage) {
             this._performBlockImage();
         }
 
-        if(Settings.BlockIframe) {
+        if(Settings.MuteIframe) {
             this._performBlockIframe();
         }
 
-        if(Settings.BlockVideo) {
+        if(Settings.MuteVideo) {
             this._performBlockVideo();
         }
+
+        if(this.checkCount > 0) {
+            this._performWildcardCheck();
+        }
+
+        this.checkCount++;
+        log('[TRACE]', 'checkCount:', this.checkCount);
+
     },
 
     _performBlockImage: function() {
@@ -95,12 +105,15 @@ var TheInstance = window.App = window.App || {
 
         // Apply object wrapping
         var $wrapper = document.createElement('div');
+        $wrapper.setAttribute('dn-check', 'true');
         $wrapper.setAttribute('dn-type', 'wrapper');
         $wrapper.setAttribute('dn-wrapper-for', elementType);
         var $relativeWrapper = document.createElement('div');
+        $relativeWrapper.setAttribute('dn-check', 'true');
         $relativeWrapper.classList.add('container');
         $wrapper.appendChild($relativeWrapper);
         var $elClone = $el.cloneNode(true);
+        $elClone.setAttribute('dn-check', 'true');
         $relativeWrapper.appendChild($elClone);
         $el.parentNode.insertBefore($wrapper, $el.nextSibling);
         $el.parentNode.removeChild($el);
@@ -151,6 +164,33 @@ var TheInstance = window.App = window.App || {
         // Bind Event Listener
         if(Settings.EnableClickToUnmute) {
             $wrapper.addEventListener('click', this._basicWrapperClickHandler.bind($wrapper)); // Just in case, binding the image wrapper
+        }
+    },
+
+    _performWildcardCheck: function() {
+        log('[TRACE]', '_performWildcardCheck triggered.');
+        var _this = this;
+        var counter = 0;
+        var $elements = window.document.querySelectorAll(':not([dn-check="true"]');
+        log('[TRACE]', '$elements.length:', $elements.length);
+        Utils.forEach($elements, function($el) {
+            if(counter < Settings.WildcardElementCheckLimit) {
+                _this._wildcardMuteCheck($el);
+                counter++;
+            }
+        });
+    },
+
+    _wildcardMuteCheck: function($el) {
+        $el.setAttribute('dn-check', 'true');
+        var $elComputedStyle = window.getComputedStyle($el);
+
+        // Background image check
+        if(Settings.MuteBackgroundImage) {
+            if(!($elComputedStyle.backgroundImage == '' || $elComputedStyle.backgroundImage == 'none')) {
+                //$el.style.opacity = 0.2; // This is not the right implementation
+                $el.style.backgroundImage = 'none';
+            }
         }
     },
 

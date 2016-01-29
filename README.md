@@ -40,6 +40,8 @@ http://www.littlewebhut.com/articles/html_iframe_example/
 http://myanimelist.net/anime/20899/JoJo_no_Kimyou_na_Bouken__Stardust_Crusaders
 - Images (with hardcoded, incorrect width & height)
 
+https://www.nib.com.au/
+- Background images
 
 ### Containers scenario yet to fix
 
@@ -48,6 +50,9 @@ https://www.youtube.com/watch?v=0af00UcTO-c
 
 
 ### Misc
+
+https://htvanime.com/
+- heavy background-image usages
 
 http://www.engadget.com/
 - Image heavy, endless pagination
@@ -76,15 +81,13 @@ TBA
 ## Progress
 
 ### Todo List
-* Detect display:block/inline-block elements that has no contents and a background-image.
+* Current all background images get unset. Have a better implementation.
 
 ### Backburner
 * TBA
 
 ### Roadmaps
-* Flash support
 * Overlay icon on disabled elements and show corresponding annotation icons to effects.
-* Detects and hides intrusive background images
 * User setting option
 * Shortcut key
 * Always on capability
