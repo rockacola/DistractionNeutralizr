@@ -63,7 +63,6 @@ http://nikonrumors.com/2015/09/17/nikon-24mm-f1-8g-ed-and-200-500mm-f5-6e-ed-vr-
 http://www.apple.com/au/
 - Background Image heavy
 
-
 http://www.codeproject.com/Articles/339725/Domain-Driven-Design-Clear-Your-Concepts-Before-Yo
 - Image, GoogleActiveView
 

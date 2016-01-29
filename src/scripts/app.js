@@ -187,7 +187,7 @@ var TheInstance = window.App = window.App || {
 
         // Background image check
         if(Settings.MuteBackgroundImage) {
-            if(!($elComputedStyle.backgroundImage == '' || $elComputedStyle.backgroundImage == 'none')) {
+            if(!($elComputedStyle.backgroundImage === '' || $elComputedStyle.backgroundImage == 'none')) {
                 //$el.style.opacity = 0.2; // This is not the right implementation
                 $el.style.backgroundImage = 'none';
             }
