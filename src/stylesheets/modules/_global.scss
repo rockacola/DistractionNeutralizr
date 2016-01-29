@@ -37,6 +37,12 @@
         }
     }
 
+    > .container {
+        position: relative;
+        width: inherit;
+        height: inherit;
+    }
+
     [dn-mute="true"] {
         opacity: 0.05 !important;
         //transition: all 0.3s ease;

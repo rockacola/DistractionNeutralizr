@@ -98,7 +98,7 @@ var TheInstance = window.App = window.App || {
         $wrapper.setAttribute('dn-type', 'wrapper');
         $wrapper.setAttribute('dn-wrapper-for', elementType);
         var $relativeWrapper = document.createElement('div');
-        $relativeWrapper.style.position = 'relative';
+        $relativeWrapper.classList.add('container');
         $wrapper.appendChild($relativeWrapper);
         var $elClone = $el.cloneNode(true);
         $relativeWrapper.appendChild($elClone);
@@ -119,9 +119,9 @@ var TheInstance = window.App = window.App || {
         }
 
         $wrapper.style.width = $elComputedStyle.width;
-        $elClone.style.width = 'auto';
+        $elClone.style.width = $elComputedStyle.width;
         $wrapper.style.height = $elComputedStyle.height;
-        $elClone.style.height = 'auto';
+        $elClone.style.height = $elComputedStyle.height;
 
         if($elComputedStyle.margin != '0px') {
             $wrapper.style.margin = $elComputedStyle.margin;
